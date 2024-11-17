@@ -1,6 +1,6 @@
 __pycache__/
 ok
-.ok
+*.ok
 .ok_history
 .ok_storage
 tests/
