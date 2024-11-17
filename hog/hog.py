@@ -22,6 +22,17 @@ def roll_dice(num_rolls, dice=six_sided):
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
     "*** YOUR CODE HERE ***"
+    hasOne, i, points = False, 0, 0
+    while i < num_rolls:
+        dice_result = dice()
+        points += dice_result
+        if dice_result == 1:
+            hasOne = True
+        i += 1
+    if hasOne:
+        return 1
+    else:
+        return points
     # END PROBLEM 1
 
 
