@@ -348,9 +348,14 @@ def final_strategy(score, opponent_score):
     """Write a brief description of your final strategy.
 
     *** YOUR DESCRIPTION HERE ***
+    If in the lead with an advantage of more than 10 points(inclusive), return 3, which is safer
+    Otherwise, return 0 if sus_strategy outperforms 6
     """
     # BEGIN PROBLEM 12
-    return 6  # Remove this line once implemented.
+    if score - opponent_score >= 10:
+        return 3
+    roll_average_dice = make_averaged(roll_dice, 100)
+    return sus_strategy(score, opponent_score, roll_average_dice(6))
     # END PROBLEM 12
 
 
