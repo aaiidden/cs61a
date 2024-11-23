@@ -349,13 +349,13 @@ def final_strategy(score, opponent_score):
 
     *** YOUR DESCRIPTION HERE ***
     If in the lead with an advantage of more than 10 points(inclusive), return 3, which is safer
-    Otherwise, return 0 if sus_strategy outperforms 6
+    Otherwise, return 0 if sus_strategy outperforms 6 or if the player can reach the goal in this turn by rolling 0
     """
     # BEGIN PROBLEM 12
     if score - opponent_score >= 10:
         return 3
     roll_average_dice = make_averaged(roll_dice, 100)
-    return sus_strategy(score, opponent_score, roll_average_dice(6))
+    return sus_strategy(score, opponent_score, min(roll_average_dice(6), GOAL - score))
     # END PROBLEM 12
 
 
