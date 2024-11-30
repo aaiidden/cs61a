@@ -84,6 +84,10 @@ def multiple(a, b):
     42
     """
     "*** YOUR CODE HERE ***"
+    i = max(a, b)
+    while i % min(a, b) != 0:
+        i += max(a, b)
+    return i
 
 
 
@@ -114,4 +118,20 @@ def cycle(f1, f2, f3):
     19
     """
     "*** YOUR CODE HERE ***"
+    def g(n):
+        def h(x):
+            result = x
+            i = 0
+            while i < n:
+                if i % 3 == 0:
+                    result = f1(result)
+                elif i % 3 == 1:
+                    result = f2(result)
+                else:
+                    result = f3(result)
+                i += 1
+            return result
+        return h
+    return g
+
 
