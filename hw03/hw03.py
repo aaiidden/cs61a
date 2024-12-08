@@ -177,6 +177,16 @@ def count_dollars_upward(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    def partition_dollar(n, k):
+        if n < 0:
+            return 0
+        elif n == 0:
+            return 1
+        elif not k:
+            return 0
+        else:
+            return partition_dollar(n - k, k) + partition_dollar(n, next_larger_dollar(k))
+    return partition_dollar(total, 1)
 
 
 def print_move(origin, destination):
