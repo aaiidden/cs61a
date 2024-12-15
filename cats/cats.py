@@ -279,10 +279,22 @@ minimum_mewtations = count(minimum_mewtations)
 def final_diff(typed, source, limit):
     """A diff function that takes in a string TYPED, a string SOURCE, and a number LIMIT.
     If you implement this function, it will be used."""
-    assert False, "Remove this line to use your final_diff function."
+    length_diff = abs(len(typed) - len(source))
+    if length_diff > limit or (not typed or not source):
+        return length_diff
+    elif limit < 0:
+        return limit + 1
+    if typed[0] == source[0]:
+        return minimum_mewtations(typed[1:], source[1:], limit)
+    elif len(typed) > 2 and len(source) > 2 and typed[0] == source[1] and typed[1] == source[0]:
+        return 1 + minimum_mewtations(typed[2:], source[2:], limit - 1)
+    else:
+        add = 1 + minimum_mewtations(typed, source[1:], limit - 1) # Fill in these lines
+        remove = 1+ minimum_mewtations(typed[1:], source, limit - 1)
+        substitute = 1+ minimum_mewtations(typed[1:], source[1:], limit - 1)
+        return min(add, remove, substitute)
 
-
-FINAL_DIFF_LIMIT = 6  # REPLACE THIS WITH YOUR LIMIT
+FINAL_DIFF_LIMIT = 5 # REPLACE THIS WITH YOUR LIMIT
 
 
 ###########
