@@ -421,7 +421,7 @@ def get_time(times, player_num, word_index):
     return times[player_num][word_index]
 
 
-enable_multiplayer = False  # Change to True when you're ready to race.
+enable_multiplayer = True  # Change to True when you're ready to race.
 
 ##########################
 # Command Line Interface #
