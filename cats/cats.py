@@ -156,6 +156,12 @@ def memo_diff(diff_function):
     def memoized(typed, source, limit):
         # BEGIN PROBLEM EC
         "*** YOUR CODE HERE ***"
+        if (typed, source) in cache and limit <= cache[(typed, source)][1]:
+            return cache[(typed, source)][0]
+        else:
+            value = diff_function(typed, source, limit)
+            cache[(typed, source)] = (value, limit)
+            return value
         # END PROBLEM EC
 
     return memoized
@@ -165,7 +171,7 @@ def memo_diff(diff_function):
 # Phase 2 #
 ###########
 
-
+@memo
 def autocorrect(typed_word, word_list, diff_function, limit):
     """Returns the element of WORD_LIST that has the smallest difference
     from TYPED_WORD based on DIFF_FUNCTION. If multiple words are tied for the smallest difference,
@@ -189,10 +195,12 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     "*** YOUR CODE HERE ***"
     if typed_word in word_list:
         return typed_word
-    elif all([diff_function(typed_word, word, limit) > limit for word in word_list]):
-        return typed_word
     else:
-        return min(word_list, key=lambda word: diff_function(typed_word, word, limit))
+        sub_word =  min(word_list, key=lambda word: diff_function(typed_word, word, limit))
+        if diff_function(typed_word, sub_word, limit) > limit:
+            return typed_word
+        else:
+            return sub_word
     # END PROBLEM 5
 
 def furry_fixes(typed, source, limit):
@@ -230,7 +238,7 @@ def furry_fixes(typed, source, limit):
             return furry_fixes(typed[1:], source[1:], limit)
     # END PROBLEM 6
 
-
+@memo_diff
 def minimum_mewtations(typed, source, limit):
     """A diff function for autocorrect that computes the edit distance from TYPED to SOURCE.
     This function takes in a string TYPED, a string SOURCE, and a number LIMIT.
@@ -248,34 +256,29 @@ def minimum_mewtations(typed, source, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
+    if typed == source:
+        return 0
     length_diff = abs(len(typed) - len(source))
-    if length_diff > limit or (not typed or not source): # Base cases should go here, you may add more base cases as needed.
-        # BEGIN
-        "*** YOUR CODE HERE ***"
+    if len(typed) == 0 or len(source) == 0:
+        return max(len(typed), len(source))
+    if length_diff > limit:
         return length_diff
-    elif limit < 0:
+    elif limit <= 0:
         return limit + 1
-        # END
     # Recursive cases should go below here
-    if typed[0] == source[0]: # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
+    if typed[0] == source[0]:
         return minimum_mewtations(typed[1:], source[1:], limit)
-        # END
     else:
-        add = 1 + minimum_mewtations(typed, source[1:], limit - 1) # Fill in these lines
-        remove = 1+ minimum_mewtations(typed[1:], source, limit - 1)
-        substitute = 1+ minimum_mewtations(typed[1:], source[1:], limit - 1)
-        # BEGIN
-        "*** YOUR CODE HERE ***"
+        add = 1 + minimum_mewtations(typed, source[1:], limit - 1)
+        remove = 1 + minimum_mewtations(typed[1:], source, limit - 1)
+        substitute = 1 + minimum_mewtations(typed[1:], source[1:], limit - 1)
         return min(add, remove, substitute)
-        # END
 
 
 # Ignore the line below
 minimum_mewtations = count(minimum_mewtations)
 
-
+@memo_diff
 def final_diff(typed, source, limit):
     """A diff function that takes in a string TYPED, a string SOURCE, and a number LIMIT.
     If you implement this function, it will be used."""
