@@ -4,3 +4,4 @@ ok
 .ok_history
 .ok_storage
 tests/
+.vscode/
