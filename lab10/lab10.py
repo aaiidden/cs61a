@@ -1,5 +1,7 @@
 ############## You do not need to understand any of this code!
 import base64
+import calendar
+from math import e
 ob = "CmRlZiBhZGRpdGlvbihleHByKToKICAgIGRpdmlkZW5kID0gZXhwci5maXJzdAogICAgZXhwciA9IGV4cHIucmVzdAogICAgd2hpbGUgZXhwciAhPSBuaWw6CiAgICAgICAgZGl2aXNvciA9IGV4cHIuZmlyc3QKICAgICAgICBkaXZpZGVuZCArPSBkaXZpc29yCiAgICAgICAgZXhwciA9IGV4cHIucmVzdAogICAgcmV0dXJuIGRpdmlkZW5kCgpkZWYgc3VidHJhY3Rpb24oZXhwcik6CiAgICBkaXZpZGVuZCA9IGV4cHIuZmlyc3QKICAgIGV4cHIgPSBleHByLnJlc3QKICAgIHdoaWxlIGV4cHIgIT0gbmlsOgogICAgICAgIGRpdmlzb3IgPSBleHByLmZpcnN0CiAgICAgICAgZGl2aWRlbmQgLT0gZGl2aXNvcgogICAgICAgIGV4cHIgPSBleHByLnJlc3QKICAgIHJldHVybiBkaXZpZGVuZAoKZGVmIG11bHRpcGxpY2F0aW9uKGV4cHIpOgogICAgZGl2aWRlbmQgPSBleHByLmZpcnN0CiAgICBleHByID0gZXhwci5yZXN0CiAgICB3aGlsZSBleHByICE9IG5pbDoKICAgICAgICBkaXZpc29yID0gZXhwci5maXJzdAogICAgICAgIGRpdmlkZW5kICo9IGRpdmlzb3IKICAgICAgICBleHByID0gZXhwci5yZXN0CiAgICByZXR1cm4gZGl2aWRlbmQKCmRlZiBkaXZpc2lvbihleHByKToKICAgIGRpdmlkZW5kID0gZXhwci5maXJzdAogICAgZXhwciA9IGV4cHIucmVzdAogICAgd2hpbGUgZXhwciAhPSBuaWw6CiAgICAgICAgZGl2aXNvciA9IGV4cHIuZmlyc3QKICAgICAgICBkaXZpZGVuZCAvPSBkaXZpc29yCiAgICAgICAgZXhwciA9IGV4cHIucmVzdAogICAgcmV0dXJuIGRpdmlkZW5kCg=="
 exec(base64.b64decode(ob.encode("ascii")).decode("ascii"))
 ##############
@@ -14,20 +16,21 @@ def calc_eval(exp):
     3
     """
     if isinstance(exp, Pair):
-        operator = ____________ # UPDATE THIS FOR Q2, e.g (+ 1 2), + is the operator
-        operands = ____________ # UPDATE THIS FOR Q2, e.g (+ 1 2), 1 and 2 are operands
+        operator = exp.first # UPDATE THIS FOR Q2, e.g (+ 1 2), + is the operator
+        operands = exp.rest.map(calc_eval) # UPDATE THIS FOR Q2, e.g (+ 1 2), 1 and 2 are operands
         if operator == 'and': # and expressions
             return eval_and(operands)
         elif operator == 'define': # define expressions
             return eval_define(operands)
         else: # Call expressions
-            return calc_apply(___________, ___________) # UPDATE THIS FOR Q2, what is type(operator)?
+            return calc_apply(calc_eval(operator), operands) # UPDATE THIS FOR Q2, what is type(operator)?
     elif exp in OPERATORS:   # Looking up procedures
         return OPERATORS[exp]
     elif isinstance(exp, int) or isinstance(exp, bool):   # Numbers and booleans
         return exp
-    elif _________________: # CHANGE THIS CONDITION FOR Q4 where are variables stored?
-        return _________________ # UPDATE THIS FOR Q4, how do you access a variable?
+    elif exp in bindings: # CHANGE THIS CONDITION FOR Q4 where are variables stored?
+        return bindings[exp] # UPDATE THIS FOR Q4, how do you access a variable?
+    return exp
 
 def calc_apply(op, args):
     return op(args)
@@ -52,6 +55,11 @@ def floor_div(args):
     20
     """
     "*** YOUR CODE HERE ***"
+    result = args.first
+    while args.rest is not nil:
+        result //= args.rest.first
+        args = args.rest
+    return result
 
 scheme_t = True   # Scheme's #t
 scheme_f = False  # Scheme's #f
@@ -74,6 +82,14 @@ def eval_and(expressions):
     True
     """
     "*** YOUR CODE HERE ***"
+    if expressions is nil:
+        return scheme_t
+    elif expressions.rest is nil:
+        return expressions.first
+    elif expressions.first is scheme_f:
+        return scheme_f
+    else:
+        return eval_and(expressions.rest)
 
 bindings = {}
 
@@ -93,6 +109,8 @@ def eval_define(expressions):
     2
     """
     "*** YOUR CODE HERE ***"
+    bindings[expressions.first] = calc_eval(expressions.rest.first)
+    return expressions.first
 
 OPERATORS = { "//": floor_div, "+": addition, "-": subtraction, "*": multiplication, "/": division }
 
@@ -162,4 +180,3 @@ class nil:
         return self
 
 nil = nil() # Assignment hides the nil class; there is only one instance
-
